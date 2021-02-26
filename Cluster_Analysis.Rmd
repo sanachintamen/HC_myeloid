@@ -1,0 +1,44 @@
+---
+title: "Cluster Analysis"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+clusters <- readRDS(file = '/Users/sanachintamen/Desktop/Cx3cr1_clusters.Rds', refhook = NULL)
+
+DefaultAssay(clusters) <- 'RNA'
+clusters <- NormalizeData(clusters)
+clusters <- FindVariableFeatures(clusters)
+all.genes <- rownames(clusters)
+clusters <- ScaleData(clusters, features = all.genes)
+```
+
+```{r DGE}
+library(Seurat)
+
+DGE <- FindAllMarkers(clusters, logfc.threshold = 0.25, min.pct = 0.7, only.pos = TRUE, assay = 'RNA')
+top_markers <- DGE %>% group_by(cluster) %>% top_n(n = 4, wt = avg_log2FC)
+genelist <- unique(top_markers$gene)
+DoHeatmap(subset(clusters, downsample =30), features = genelist, group.colors = c("#f38ff0","#ffbb91","#c18ab6","#01CACA","#ffafbd","#ff5e62","#e8ffc1","#cccc00","#70e1f5","#9599e8","#aa4371","#065c6f","#edc988","#ff8b3d")) + NoLegend()
+
+p2f + CTCN_chroma('mixed7')
+
+DGE_all <- FindAllMarkers(clusters, logfc.threshold = 0.25, assay = 'RNA')
+write.csv(DGE_all, file = '/Users/sanachintamen/Desktop/Cx3cr1_DGE.csv')
+
+markers0vs1 <- FindMarkers(clusters, logfc.threshold = 0.25,  ident.1 = 1, ident.2 = 0)
+
+```
+
+```{r}
+myeloid = c('Cx3cr1','Tmem119', 'P2ry12', 'Hexb', 'Aif1','Csf1r','Itgam','Ptprc','Cd68','Itgax','Ccr2','Pf4','Mrc1','Ms4a7','Cd163','Cd74', 'Lpl', 'Cd79b', 'Cstd','Ccl3', 'Cst7', 'Ctsd', 'Cst3')
+
+#DotPlot(clusters, assay = 'SCT', features = myeloid, cols = 'Spectral')+ RotatedAxis() + labs(y="Cluster ID", x = "Gene")
+
+DotPlot(clusters, assay = 'RNA', features = myeloid, cols = 'Spectral')+ RotatedAxis() + labs(y="Cluster ID", x = "Gene")
+```
+
