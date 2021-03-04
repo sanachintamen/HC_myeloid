@@ -1,0 +1,74 @@
+---
+title: "Gene Ontology"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## GitHub Documents
+```{r}
+library(Seurat)
+library(topGO)
+library("org.Mm.eg.db")
+library(genefilter)
+library(ggplot2)
+library(tidyr)
+library(tidyselect)
+library(dplyr)
+library(topGO)
+DGE_all <- FindAllMarkers(clusters, logfc.threshold = 0.25, only.pos = TRUE,assay = 'RNA')
+GE_all))
+
+dge <- as.tbl(DGE_all)
+dge <- filter(dge, cluster == 0)
+dge <- dplyr::select(dge, gene, p_val_adj)
+```
+```{r}
+clusterGO <- function(DGE, clusterID, GOquant)
+{
+  dge <- as.data.frame(DGE_all)
+  dge <- filter(dge, cluster == clusterID)
+  dge <- dplyr::select(dge, gene, p_val_adj)
+  genes <- dge$gene
+  dge <- as.numeric(dge$p_val_adj)
+  names(dge) <- genes
+  dge <- annotation(dge, GOquant)
+  return(dge)
+}
+
+
+cluster0 <- clusterGO(DGE_all, 0)
+
+cluster1 <- clusterGO(DGE_all, 1)
+
+cluster2 <- clusterGO(DGE_all, 2, 98)
+
+cluster3 <- clusterGO(DGE_all, 3, 157)
+cluster5 <- clusterGO(DGE_all, 5, 5)
+
+
+cluster6 <- clusterGO(DGE_all, 6, 200)
+
+
+cluster7 <- clusterGO(DGE_all, 7, 200)
+
+
+cluster8 <- clusterGO(DGE_all, 8, 2)
+
+
+cluster9 <- clusterGO(DGE_all, 9, 179)
+
+cluster10 <- clusterGO(DGE_all, 10, 119)
+
+
+cluster11 <- clusterGO(DGE_all, 11, 119)
+
+
+cluster12 <- clusterGO(DGE_all, 12, 5)
+
+cluster13 <- clusterGO(DGE_all, 13, 200)
+
+```
+

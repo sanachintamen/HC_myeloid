@@ -35,10 +35,14 @@ library(ggplot2)
 SGZvsMG <- FindMarkers(clusters, ident.1 = 4, ident.2 = c(0,1), logfc.threshold = 0.25)
 
 
+DotPlot(clusters, features = c('Trem2', 'Axl', 'Cst7', 'Ctsl', 'Lpl', 'Cd9', 'Csf1', 'Ccl6', 'Itgax', 'Lilrb4', 'Timp2'), cols = 'Spectral') + RotatedAxis() + labs(y="Cluster ID", x = "Gene") + ggtitle('DAM stage 2 genes')
+
 #butovsky 2014
-MG_markers <- c('Tmem119', 'P2ry12','Fcrls',  'Olfml3', 'Hexb', 'Tgfbr1', 'Gpr34', 'Sall1', 'Mertk', 'P2ry13', 'Csf1r', 'pros1', 'Gas6','C1qa', 'C1qb','Cd34')
-p0 <- VlnPlot(clusters, features = MG_markers, idents = c(0,1,4), pt.size = 0, ncol = 5, cols = c("#f38ff0","#ffbb91","#ffafbd"))
-p1 <- VlnPlot(clusters, features = top_SGZ$gene, idents = c(0,1,4), pt.size = 0, ncol = 5)
+MG_markers <- c('Tmem119', 'P2ry12','Fcrls',  'Olfml3', 'Hexb', 'Tgfbr1', 'Gpr34', 'Sall1', 'Mertk', 'P2ry13', 'Csf1r', 'Gas6','C1qa', 'C1qb','Cd34')
+
+MG_up <- c('Cd9', 'Cd63', 'Ftl1', 'Ctsz', 'Ctsb','Ctsd', 'Mif', 'C3ar1', 'C5ar1', 'Apoe', 'Mt1', 'Lyz2', 'Cd83','Lpl', 'Csf1' )
+p0 <- VlnPlot(clusters, features = MG_markers, idents = c(0,1,4), pt.size = 0, ncol = 5, cols = c('dodgerblue4','seagreen4', 'tomato4'))
+p1 <- VlnPlot(clusters, features = MG_up, idents = c(0,1,4), pt.size = 0, ncol = 5,cols = c('dodgerblue4','seagreen4', 'tomato4'))
 
 p0/p1
 p0

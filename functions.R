@@ -30,7 +30,7 @@ DownGenes <- function (genelist)
 
 
 # To perform GO with TopGOO
-annotation <- function(genelist)
+annotation <- function(genelist, GOquant)
 {
   GOdata <- new("topGOdata",
                 description = 'test run', ontology = "BP",
@@ -53,7 +53,7 @@ annotation <- function(genelist)
                      elimKS = resultKS.elim,
                      orderBy = "elimKS", 
                      ranksOf = "classicFisher", 
-                     topNodes = 200,
+                     topNodes = GOquant,
                      numChar = 200)  
   return(allRes)
 }

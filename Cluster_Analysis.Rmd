@@ -35,10 +35,24 @@ markers0vs1 <- FindMarkers(clusters, logfc.threshold = 0.25,  ident.1 = 1, ident
 ```
 
 ```{r}
-myeloid = c('Cx3cr1','Tmem119', 'P2ry12', 'Hexb', 'Aif1','Csf1r','Itgam','Ptprc','Cd68','Itgax','Ccr2','Pf4','Mrc1','Ms4a7','Cd163','Cd74', 'Lpl', 'Cd79b', 'Cstd','Ccl3', 'Cst7', 'Ctsd', 'Cst3')
+library(ggplot2)
+myeloid = c('Cx3cr1','Tmem119', 'P2ry12', 'Hexb', 'Aif1','Csf1r','Itgam','Ptprc','Cd68','Itgax','Ccr2','Pf4','Mrc1','Ms4a7','Cd163','Cd74', 'Lpl', 'Cd79b','Ccl3', 'Cst7', 'Ctsd', 'Cst3')
 
 #DotPlot(clusters, assay = 'SCT', features = myeloid, cols = 'Spectral')+ RotatedAxis() + labs(y="Cluster ID", x = "Gene")
 
-DotPlot(clusters, assay = 'RNA', features = myeloid, cols = 'Spectral')+ RotatedAxis() + labs(y="Cluster ID", x = "Gene")
+p3 <- DotPlot(clusters, assay = 'RNA', features = myeloid, cols = 'Spectral')+ RotatedAxis() + labs(y="Cluster ID", x = "Gene") + ggtitle('Common Myeloid Markers')
+```
+
+```{r Suppfigures}
+
+
+p5 <- DotPlot(clusters, features = c('Cx3cr1', 'P2ry12','Tmem119','Tyrobp','Ctsb','Ctsd','Apoe', 'B2m', 'Fth1', 'Lyz2'), cols = 'Spectral')+ RotatedAxis() + labs(y="Cluster ID", x = "Gene") + ggtitle('DAM stage 1 genes')
+
+p4 <- DotPlot(clusters, 
+              features = c('Trem2', 'Axl', 'Cst7', 'Ctsl', 'Lpl', 'Cd9', 'Csf1', 'Ccl6', 'Itgax', 'Lilrb4', 'Timp2'),
+              cols = 'Spectral') + 
+              RotatedAxis() + 
+              labs(y="Cluster ID", x = "Gene") + 
+              ggtitle('DAM stage 2 genes')
 ```
 
