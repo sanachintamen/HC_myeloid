@@ -44,7 +44,7 @@ p3 <- DotPlot(clusters, assay = 'RNA', features = myeloid, cols = 'Spectral')+ R
 ```
 
 ```{r Suppfigures}
-
+library(patchwork)
 
 p5 <- DotPlot(clusters, features = c('Cx3cr1', 'P2ry12','Tmem119','Tyrobp','Ctsb','Ctsd','Apoe', 'B2m', 'Fth1', 'Lyz2'), cols = 'Spectral')+ RotatedAxis() + labs(y="Cluster ID", x = "Gene") + ggtitle('DAM stage 1 genes')
 
@@ -54,5 +54,12 @@ p4 <- DotPlot(clusters,
               RotatedAxis() + 
               labs(y="Cluster ID", x = "Gene") + 
               ggtitle('DAM stage 2 genes')
+
+
+p6 <- DotPlot(clusters, features = c('Cx3cr1', 'P2ry12','Tmem119','Tyrobp','Ctsb','Ctsd','Apoe', 'B2m', 'Fth1', 'Lyz2','Trem2', 'Axl', 'Cst7', 'Ctsl', 'Lpl', 'Cd9', 'Csf1', 'Ccl6', 'Itgax', 'Lilrb4', 'Timp2'), cols = 'Spectral')+ RotatedAxis() + labs(y="Cluster ID", x = "Gene") 
+
+
+
+p5+p4
 ```
 

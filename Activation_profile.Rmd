@@ -1,0 +1,221 @@
+---
+title: "DAM profile"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r Data}
+library(Seurat)
+clusters <- readRDS(file = '/Users/sanachintamen/Desktop/Cx3cr1_clusters.Rds', refhook = NULL)
+DefaultAssay(clusters) <- 'RNA'
+clusters <- NormalizeData(clusters)
+clusters <- FindVariableFeatures(clusters)
+all.genes <- rownames(clusters)
+clusters <- ScaleData(clusters, features = all.genes)
+```
+
+```{r cars}
+library(VennDiagram)
+library(ggvenn)
+library(dplyr)
+
+
+SGZvsMG <- FindMarkers(clusters, ident.1 = 4, ident.2 = c(0,1), logfc.threshold = 0.25)
+SGZup <- filter(SGZvsMG, avg_log2FC > 0)
+SGZup <- rownames(SGZup)
+SGZdown <- filter(SGZvsMG, avg_log2FC < 0)
+SGZdown <- rownames(SGZdown)
+
+DAM <- read.csv('/Users/sanachintamen/Documents/kerenshaul1vs3.csv')
+DAM <- as.data.frame(DAM)
+DAMup <- filter(DAM, up.down == 1)
+DAMup <- DAMup$X
+DAMdown <- filter(DAM, up.down == -1)
+DAMdown <- DAMdown$X
+rm(DAM)
+
+PAM <- read.csv(file = '/Users/sanachintamen/Desktop/PAM.csv')
+PAM <- as.data.frame(PAM)
+PAMup <- filter(PAM, avg_logFC > 0)
+PAMup <- PAMup$gene
+PAMdown <- filter(PAM, avg_logFC <0)
+PAMdown <- PAMdown$gene
+rm(PAM)
+
+
+M1up <- read.csv(file = '/Users/sanachintamen/Desktop/M1up.csv', header = FALSE)
+header <- M1up[2,]
+colnames(M1up) <- header
+M1up <- M1up[3:850, 2]
+M1down <- read.csv(file = '/Users/sanachintamen/Desktop/M1down.csv', header = FALSE)
+header <- M1down[2,]
+colnames(M1down) <- header
+M1down <- M1down[3:473, 2]
+
+
+M2up <- read.csv(file = '/Users/sanachintamen/Desktop/M2up.csv', header = FALSE)
+header <- M2up[2,]
+colnames(M2up) <- header
+M2up <- M2up[3:75, 2]
+M2down <- read.csv(file = '/Users/sanachintamen/Desktop/M2down.csv', header = FALSE)
+header <- M2down[2,]
+colnames(M2down) <- header
+M2down <- M2down[3:53, 2]
+
+```
+
+
+```{r VENNdiagrams}
+plot <- venn.diagram(list(SGZup, DAMup, M1up, M2up, PAMup),
+                     filename = '/Users/sanachintamen/Desktop/upvenn.tiff',
+                     cex = 1,
+                     fill = c("red", "blue", "green", 'purple', 'yellow'),
+                     main = 'Upregulated Genes',
+                     main.cex = 2,
+                     fontface = 'plain',
+                     fontfamily = 'Arial',
+                     height = 3100,
+                     width = 4000,
+                     cat.cex = 1.5,
+                     cat.dist = c(0.2, 0.22,0.18,0.2, 0.22),
+                     margin =0.15,
+                     category.names = c('SGZ', 'DAM ', 'M1', 
+                                       'M2', 'PAM'))
+
+plot <- venn.diagram(list(SGZdown, DAMdown,M1down, M2down, PAMdown),
+                     filename = '/Users/sanachintamen/Desktop/downvenn.tiff',
+                     cex = 1,
+                     fill = c("red", "blue", "green", 'purple', 'yellow'),
+                     main = 'Downregulated Genes',
+                     main.cex = 2,
+                     fontface = 'plain',
+                     fontfamily = 'Arial',
+                     height = 3100,
+                     width = 4000,
+                     cat.cex = 1.5,
+                     cat.dist = c(0.2, 0.22,0.18,0.2, 0.22),
+                     margin =0.15,
+                     category.names = c('SGZ', 'DAM ', 'M1', 
+                                       'M2', 'PAM'))
+
+
+
+
+
+```
+
+
+
+## SGZ MG vs DAM vs M1 vs M2
+
+get datasets from M1 and M2 phenotype [here](https://onlinelibrary.wiley.com/doi/full/10.1111/cen3.12426)
+```{r}
+
+```
+
+
+
+```{r echo=FALSE}
+library(dplyr)
+
+
+genes <- intersect(SGZgenes, PAMup)
+genes
+
+
+dampam <- intersect(PAMup, DAMup)
+
+
+uniqueSGZ <- setdiff(SGZgenes, PAMup)
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
+```{r}
+library(S)
+DefaultAssay(clusters) <-  'RNA'
+
+# sgz <- FindSubCluster(
+#   clusters,
+#   cluster = 4,
+#   graph.name = "integrated_snn",
+#   subcluster.name = "SGZ",
+#   resolution = 0.5,
+#   algorithm = 1
+# )
+
+SGZ_MG <- subset(clusters, idents = 4)
+SGZ_MG <- FindVariableFeatures(SGZ_MG)
+SGZ_MG <- ScaleData(SGZ_MG)
+SGZ_MG <- RunPCA(SGZ_MG)
+SGZ_MG <- FindNeighbors(SGZ_MG)
+SGZ_MG <- FindClusters(SGZ_MG, resolution = 0.5)
+SGZ_MG <- RunUMAP(SGZ_MG, dims = 1:10)
+
+DimPlot(SGZ_MG)
+
+submarkers <- FindAllMarkers(SGZ_MG, logfc.threshold = 0.25, only.pos = TRUE, min.diff.pct = 0.1)
+
+sgz <- FindSubCluster(
+  SGZ_MG,
+  cluster = 4,
+  graph.name = "integrated_snn",
+  subcluster.name = "SGZ",
+  resolution = 0.5,
+  algorithm = 1
+)
+
+```
+
+```{r}
+immuneUP <- upGO[c(22,25, 137,1, 2,14,22, 24,114,181, 30, 51, 49,90),]
+
+
+bar <- ggplot(immuneUP, aes(Annotated, Term)) +
+  geom_col(fill = 'firebrick') +
+  scale_y_discrete(position = 'left') 
+```
+
+```{r}
+library(ggplot2)
+library(ggvenn)
+
+
+x <- list(PAMup, SGZgenes, DAMup)
+
+ggvenn(list(PAMup, SGZgenes, DAMup), 
+       show_percentage = TRUE, 
+       fill_color = c('red', 'blue', 'yellow'))
+```
+```{r}
+DAMinSGZ <- intersect(SGZup, DAMup)
+SGZ_MG <- subset(clusters, idents = 4)
+
+p0 <- DoHeatmap(SGZ_MG, features = DAMinSGZ, group.bar = FALSE) + NoLegend()
+p0
+```
+
+```{r}
+PAMinSGZ <- intersect(SGZup, PAMup)
+
+setdiff(PAMinSGZ, DAMinSGZ)
+
+intersect(DAMinSGZ, PAMinSGZ)
+unique(PAMinSGZ,DAMinSGZ )
+uniquegenes <- PAMinSGZ[unique(PAMinSGZ,DAMinSGZ )]
+
+
+p1 <- DoHeatmap(SGZ_MG, features = setdiff(PAMinSGZ, DAMinSGZ), group.bar = FALSE) + NoLegend()
+```
+
+```{r}
+p6 <- DotPlot(clusters, features = c('Cx3cr1', 'P2ry12','Tmem119','Tyrobp','Ctsb','Ctsd','Apoe', 'B2m', 'Fth1', 'Lyz2','Trem2', 'Axl', 'Cst7', 'Ctsl', 'Lpl', 'Cd9', 'Csf1', 'Ccl6', 'Itgax', 'Lilrb4', 'Timp2'), cols = 'RdBu')+ RotatedAxis() + labs(y="Cluster ID", x = "Gene") 
+```
+

@@ -161,13 +161,13 @@ SGZvsMG <- as_data_frame(SGZvsMG)
 up <- UpGenes(SGZvsMG)
 down <- DownGenes(SGZvsMG)
 downGO <- annotation(down)
-upGO <- annotation(up)
+upGO <- annotation(up, 200)
 
 
 ```
 
 ```{r plotGO, echo = FALSE}
-neuronup <- upGO[c(11,23,43,56,57,86,95,92,107,122,129,134,151,177,178),]
+neuronup <- upGO[c(11,23,43,56,57,86,95,92,107,122,129,134,151,177,178, 123,69),]
 neurondown <- downGO[c(4,5,6,7,8,10,13,14,27,39,42,53,59,74,98),]
 
 neuronup <- as_data_frame(neuronup)
@@ -185,10 +185,10 @@ relevel(neuronup, neuronup$Annotated)
  
 p0 <- ggplot(neuronup, aes(Annotated, Term)) +
   geom_col(fill = 'firebrick') +
-  scale_y_discrete(position = 'right') 
+  scale_y_discrete(position = 'left') 
   
     
-
+p0
 
 p1 <- ggplot(neurondown, aes(Annotated, Term)) +
   geom_col(fill = 'blue') +
