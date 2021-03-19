@@ -8,6 +8,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
+library(Seurat)
 clusters <- readRDS(file = '/Users/sanachintamen/Desktop/Cx3cr1_clusters.Rds', refhook = NULL)
 
 DefaultAssay(clusters) <- 'RNA'

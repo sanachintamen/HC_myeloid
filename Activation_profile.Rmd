@@ -83,6 +83,7 @@ plot <- venn.diagram(list(SGZup, DAMup, M1up, M2up, PAMup),
                      cat.cex = 1.5,
                      cat.dist = c(0.2, 0.22,0.18,0.2, 0.22),
                      margin =0.15,
+                     output = TRUE,
                      category.names = c('SGZ', 'DAM ', 'M1', 
                                        'M2', 'PAM'))
 
