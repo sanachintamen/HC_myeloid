@@ -70,3 +70,12 @@ Stmn1
 FeaturePlot(IFN, features = c('Oasl2'))
 ```
 
+
+
+```{r}
+metab <- subset(clusters, ident = 10)
+FeaturePlot(metab, features = c('Apoe', 'Lyz2'), blend = TRUE) +NoLegend()
+FeaturePlot(metab, features = c('Rpl30','Rps9'), blend = TRUE)
+
+```
+

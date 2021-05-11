@@ -151,6 +151,16 @@ library(tidyselect)
 library(ggplot2)
 library(enrichplot)
 
+
+SGZvsMG <- FindMarkers(clusters, ident.1 = 4,ident.2 = c(0,1), logfc.threshold = 0.25)
+
+SGZ <- FindMarkers(clusters, ident.1 = 4, logfc.threshold = 0.25)
+gene <- rownames(SGZ)
+SGZ <- cbind(gene, SGZ)
+SGZ<- as_data_frame(SGZ)
+up <- UpGenes(SGZ)
+upGO_SGZ <- annotation(up,500)
+
 #run code chunk first
 gene <- rownames(SGZvsMG)
 SGZvsMG <- cbind(gene, SGZvsMG)
@@ -161,13 +171,70 @@ SGZvsMG <- as_data_frame(SGZvsMG)
 up <- UpGenes(SGZvsMG)
 down <- DownGenes(SGZvsMG)
 downGO <- annotation(down)
-upGO <- annotation(up, 200)
+upGO <- annotation(up, 500)
+names(up)
+
+edo <- enrichDGN(names(up))
+barplot()
+enrichplot::barplot
 
 
 ```
 
+```{r}
+library(DOSE)
+data(geneList)
+de <- names(geneList)[abs(geneList) > 2]
+edo <- enrichDGN(de)
+data1 <-read.delim("Combined GO.txt", header = TRUE, sep = "\t")                 
+library(enrichplot)
+barplot(edo, showCategory=30)
+```
+```{r}
+# import package
+library("ggplot2")
+
+# create fake data
+set.seed(1024) # keep reproducibility
+go <- paste0("GO", sample(1000:2000, 5))
+data <- data.frame("GOs" = rep(go, 2), 
+                   "Condition" = rep(c("A", "B"), each = 5),
+                   "GeneRatio" = 1 / sample(10, 10), 
+                   "p.adjust" = 0.05 / sample(10, 10))
+
+cc <- scales::seq_gradient_pal("blue", "red", "Lab")(seq(0,1,length.out=20))
+
+# plot: dot plot
+ggplot(data = data, aes(x = Condition, y = GOs, 
+                        color = `p.adjust`, size = GeneRatio)) + 
+  geom_point() +
+  scale_color_gradient(low = "red", high = "blue") +
+  theme_bw() + 
+  ylab("") + 
+  xlab("") + 
+  ggtitle("GO enrichment analysis")
+
+
+
+ggplot(data = neuronup, aes(x = Annotated, y = Term, 
+                        color = elimKS, size = Significant)) + 
+  geom_point() +
+  scale_colour_manual(values=cc) +
+  theme_bw() + 
+  ylab("") + 
+  xlab("") + 
+  ggtitle("GO enrichment analysis")
+
+ggplot(neuronup, aes(Term, color= elimKS)) +
+  geom_bar() +
+   scale_colour_manual(values=cc) 
+```
+
+
+
+
 ```{r plotGO, echo = FALSE}
-neuronup <- upGO[c(11,23,43,56,57,86,95,92,107,122,129,134,151,177,178, 123,69),]
+neuronup <- upGO[c(11,23,43,56,57,86,95,92,107,122,129,134,143,151,177,178, 123,69),]
 neurondown <- downGO[c(4,5,6,7,8,10,13,14,27,39,42,53,59,74,98),]
 
 neuronup <- as_data_frame(neuronup)
@@ -180,7 +247,7 @@ relevel(neuronup, neuronup$Annotated)
 		   #xlab = NULL, ylab = NULL, title = NULL)
 
 
-  
+filtered <- filter(upGO, elimKS < 0.05)
  
  
 p0 <- ggplot(neuronup, aes(Annotated, Term)) +

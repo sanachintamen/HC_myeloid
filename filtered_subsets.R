@@ -11,16 +11,17 @@ FvM <- FindMarkers(clusters, ident.1 = 1, ident.2 = 0, only.pos = TRUE)
 MvF <- FindMarkers(clusters, ident.1 = 0, ident.2 = 1)
 
 split
-
+library(dplyr)
 genes <- rownames(MandF)
 DotPlot(clusters, features = genes)
 
 MvF<- as.data.frame(MvF)
 genes <- filter(MvF, p_val_adj < 0.001)
 genes <- rownames(genes)
+genes 
 
-p0 <- VlnPlot(clusters, idents = c(1,0), features = genes, pt.size = 0, cols = c('dodgerblue2', 'tomato2'))
-RidgePlot(clusters, idents = c(0,1), features = genes,cols = c('dodgerblue2', 'tomato2'))
+p0 <- VlnPlot(clusters, idents = c(1,0), features = genes, pt.size = 0, cols = c('dodgerblue2', 'tomato2'), ncol = 9)
+RidgePlot(clusters, idents = c(0,1), features = genes,cols = c('dodgerblue2', 'tomato2'), ncol = 7)
 
 
 FeaturePlot(clusters, features = 'Xist')
