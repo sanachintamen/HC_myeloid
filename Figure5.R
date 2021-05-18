@@ -346,25 +346,6 @@ neurondown <- downGO[c(4,5,6,7,8,10,13,14,27,39,42,53,59,74,98),]
 neuronup <- as_data_frame(neuronup)
 neuronup <- neuronup %>% arrange(desc(Annotated))
 
-relevel(neuronup, neuronup$Annotated)
-
-#enrichment_barplot(object, result, showTerms = 10, numChar = 40, 
-#orderBy = "Scores", y = "Count", 
-#xlab = NULL, ylab = NULL, title = NULL)
-
-pdf(file = '/Users/sanachintamen/Analysis/ThesisPlots/neuronUPGO.pdf',
-    width = 10)
-
-ggplot(neuronup, aes(x =Annotated,y = reorder(Term, Annotated))) +
-  theme_classic()+
-  geom_col(fill = 'forestgreen')  +
-  theme(text = element_text(size = 16), axis.title=element_text(size=18,face="bold")) +  
-  scale_y_discrete(position = 'left') +
-  xlab('Number of genes') +
-  ylab('GO term')
-
-
-dev.off()
 
 
 immuneUP <- upGO[c(25, 137,1, 2,14,22, 24,114,181, 30, 51, 49,90),]

@@ -45,6 +45,69 @@ ggsave(pC,
        )
 
 ##### 
+library(tidyr)
+clust <-as.data.frame(table(MG_tree$tree.ident))
+run <- 'Integrated'
+length(run) <- 14
+run <- replace_na(run, 'Integrated')
+clust <- cbind(run, clust)
+colnames(clust) <-c('RunID', 'ClusterID', 'CellCount')
+totalcells <- sum(clust$CellCount)
+Percent <- ((clust$CellCount)/totalcells) * 100
+Percent <- round(Percent, digits=0)
+clust <- cbind(clust, Percent)
+
+
+
+
+p <- ggplot(clust, aes(fill= ClusterID, y= CellCount, x= RunID)) +
+  geom_bar( stat="identity", width = 0.5) +
+  scale_fill_manual(values = combined)+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title.x = element_blank(),
+        axis.line = element_line(colour = "black")) +
+  geom_text(aes(label = Percent), position = position_stack(vjust = 0.5)) + 
+  scale_y_continuous(position = "right") + 
+  NoLegend()
+
+p
+pdf(file = '/Users/sanachintamen/Analysis/ThesisPlots/barplot.pdf',
+    width =3,
+     height = 12)
+p
+dev.off()
+
+p2 <- ggplot(clust, aes(fill= ClusterID, y= CellCount, x= RunID)) +
+  geom_bar( stat="identity", width = 0.1) +
+  scale_fill_manual(values = combined)+
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        axis.line = element_line(colour = "black")) +
+  labs(y = 'Cell Count') + 
+  scale_x_discrete(expand = c(0,0))+
+  scale_y_continuous(expand = c(0,0))+
+  geom_text(aes(label = Percent), position = position_stack(vjust = 0.5)) + 
+  NoLegend()
+
+p2 <- p2 +coord_flip()
+pdf(file = '/Users/sanachintamen/Analysis/ThesisPlots/flipbarplot2.pdf',
+    width =12,
+    height = 0.75)
+p2 
+dev.off()
+
+
+
+
+pD <- p + coord_flip() + NoLegend() + NoAxes()
+pD
+
 #Cell type classification
 DefaultAssay(MG_tree) <- 'RNA'
 clusters <- NormalizeData(MG_tree)
@@ -91,61 +154,7 @@ ggsave(plot = p5,
 
 #####
 
-library(dplyr)
-library(tidyr)
-
-meta <- clusters@meta.data
-meta <- as.data.frame(meta)
-
-run1 <- filter(meta, orig.ident == 'SS01')
-run1 <- as.data.frame(table(run1$tree.ident))
-run <- '1'
-length(run) <- 14
-run <- replace_na(run, '1')
-run1 <- cbind(run, run1)
-colnames(run1) <-c('RunID', 'ClusterID', 'CellCount')
-totalcells <- sum(run1$CellCount)
-Percent <- ((run1$CellCount)/totalcells) * 100
-Percent <- round(Percent, digits=2)
-run1 <- cbind(run1, Percent)
-
-
-run2<- filter(meta, orig.ident == 'SS02')
-run2 <- as.data.frame(table(run2$tree.ident))
-run <- '2'
-length(run) <- 14
-run <- replace_na(run, '2')
-run2 <- cbind(run, run2)
-colnames(run2) <-c('RunID', 'ClusterID', 'CellCount')
-totalcells <- sum(run2$CellCount)
-Percent <- ((run2$CellCount)/totalcells) * 100
-Percent <- round(Percent, digits=2)
-run2 <- cbind(run2, Percent)
-
-
-run3<- filter(meta, orig.ident == 'SS03')
-run3 <- as.data.frame(table(run3$tree.ident))
-run <- '3'
-length(run) <- 14
-run <- replace_na(run, '3')
-run3 <- cbind(run, run3)
-colnames(run3) <-c('RunID', 'ClusterID', 'CellCount')
-totalcells <- sum(run3$CellCount)
-Percent <- ((run3$CellCount)/totalcells) * 100
-Percent <- round(Percent, digits=2)
-run3 <- cbind(run3, Percent)
-
-runs <- rbind(run1, run2, run3)
-
-p <- ggplot(runs, aes(fill= ClusterID, y= Percent, x= RunID)) +
-  geom_bar( stat="identity", width = 0.4) +
-  scale_fill_manual(values = combined)+
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank(), 
-        axis.line = element_line(colour = "black")) 
-p
-
+clusterID
 
 ##### 
 
@@ -175,3 +184,19 @@ pdf(file = '/Users/sanachintamen/Analysis/ThesisPlots/XistUMAP.pdf',
     width = 9)
 FeaturePlot(clusters, features = 'Xist', cols = scheme)
 dev.off()
+
+
+pD <- p + coord_flip() + NoLegend() + NoAxes()
+pD
+
+pC<-UMAPPlot(MG_tree, label = T, cols=combined)
+pC <- pC + NoAxes() + NoLegend()
+pC
+pC / p2
+
+pdf(file = '/Users/sanachintamen/Analysis/ThesisPlots/Fig1CUMAP.pdf',
+    width = 9.5,
+    height = 5)
+pC
+dev.off()
+

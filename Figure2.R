@@ -34,7 +34,6 @@ genelist <- unique(top_markers$gene)
 # check http://oshlacklab.com/combes-organoid-paper/07_Combined_Clustering.html for better heat map
 
 
-cols <- viridis(100)[c(1, 50, 100)]
 
 
 DoHeatmap(subset(clusters, downsample =30), features = genelist, group.colors = combined) +  scale_fill_viridis()
@@ -158,27 +157,6 @@ DoHeatmap(subset(clusters, downsample =30), features = genelist, group.colors = 
 FeaturePlot(clusters, features = 'Rtp4')
 
 #####
-library(Seurat)
-library(topGO)
-library("org.Mm.eg.db")
-library(genefilter)
-library(dplyr)
-library(tidyr)
-library(tidyselect)
-library(ggplot2)
-library(enrichplot)
-
-clusterGO <- function(DGE, clusterID, GOquant)
-{
-  dge <- as.data.frame(DGE)
-  dge <- filter(dge, cluster == clusterID)
-  dge <- dplyr::select(dge, gene, p_val_adj)
-  genes <- dge$gene
-  dge <- as.numeric(dge$p_val_adj)
-  names(dge) <- genes
-  dge <- annotation(dge, GOquant)
-  return(dge)
-}
 
 
 cluster1 <- clusterGO(DGE, 1,30)

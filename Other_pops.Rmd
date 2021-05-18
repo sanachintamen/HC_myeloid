@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r Cluster11}
 library(Seurat)
 
-CAM <- subset(clusters, ident = 11)
+CAM <- subset(clusters, ident = 2)
 
 p1 <- FeaturePlot(CAM, features = c('Cd74', 'H2-Aa'), blend =  TRUE)
 FeaturePlot(CAM, features = c('Cd36', 'Clec4n'), blend = TRUE)
