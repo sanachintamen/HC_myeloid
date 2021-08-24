@@ -371,3 +371,9 @@ SGZ_MvF <- as.data.frame(SGZ_MvF)
 genes <- filter(SGZ_MvF, p_val_adj < 0.001)
 genes <- rownames(genes)
 VlnPlot(SGZ, idents = c('M','F'), features = genes, pt.size = 0, cols = c( 'tomato1','cornflowerblue'))
+
+
+#DGE between clusters
+top_markers <- DGE %>% group_by(cluster) %>% top_n(n = 5, wt = avg_log2FC)
+genelist <- unique(top_markers$gene)
+DoHeatmap(subset(clusters, downsample =30), features = genelist, group.colors = combined) + scale_fill_gradientn(colors = c("blue", "white", "red"))+ theme(text = element_text(size = 20))
