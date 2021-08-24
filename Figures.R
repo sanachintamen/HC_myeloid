@@ -24,7 +24,6 @@ Percent <- ((clust$CellCount)/totalcells) * 100
 Percent <- round(Percent, digits=0)
 clust <- cbind(clust, Percent)
 
-
 ggplot(clust, aes(fill= ClusterID, y= CellCount, x= RunID)) +
   geom_bar( stat="identity", width = 0.1) +
   scale_fill_manual(values = combined)+
@@ -40,13 +39,10 @@ ggplot(clust, aes(fill= ClusterID, y= CellCount, x= RunID)) +
   geom_text(aes(label = Percent), position = position_stack(vjust = 0.5)) + 
   NoLegend() + coord_flip()
 
-
 #Figure 1E
 DotPlot(clusters, features  =c('Cx3cr1', 'Itgam', 'Ptprc', 'Cd4', 'Cd8a','Cd19','Cd80', 'Rbfox3', 'Cspg4', 'Nes', 'Gfap', 'Mbp', 'Olig1'), cols = 'RdBu')+ RotatedAxis() + labs(y="Cluster ID", x = "Gene")
 
 #Figure 1F Feature PLOTS
-
-
 p0 <- FeaturePlot(clusters, features = 'Cx3cr1', cols = c("#d5d0bc", "#ff5e62"))+ 
   theme_void() + ggtitle('Cx3cr1' ) +
   theme(plot.title = element_text(hjust = 0.5, face = 'bold'))
@@ -114,14 +110,12 @@ p14 <- FeaturePlot(clusters, features = 'Cd74',cols = c("#d5d0bc", "#ff5e62"))+
 
 
 #Figure 2H
-
 VlnPlot(clusters, features = 'Cd68', pt.size = 0, split.by = 'orig.ident', slot = 'counts') + 
   geom_boxplot(outlier.size = 0 ,
                position = position_dodge(width = 0.9)) +
   xlab('Cluster ID') 
 
 #Figure 3A Volcano Plot for cluster 8
-
 SGZ <- FindMarkers(clusters, ident.1 = 8, ident.2 = c(13,14), logfc.threshold = 0.001)
 EnhancedVolcano(SGZ,
                 lab = rownames(SGZ),
@@ -146,9 +140,7 @@ EnhancedVolcano(SGZ,
 VlnPlot(clusters, features = c('Tmem119', 'P2ry12','Fcrls',  'Olfml3', 'Hexb', 'Tgfbr1', 'Gpr34', 'Sall1', 'Mertk', 'P2ry13', 'Csf1r', 'Selplg','C1qa', 'C1qb','Cd34'), idents = c(8,13,14), pt.size = 0, ncol = 5, cols =combined[c(8,13,14)])
 VlnPlot(clusters, features = c('Cd9', 'Cd63', 'Ftl1', 'Ctsz', 'Ctsb','Ctsd', 'Mif', 'C3ar1', 'C5ar1', 'Apoe', 'Mt1', 'Lyz2', 'Cd83','Lpl', 'Csf1' ), idents = c(8,13,14), pt.size = 0, ncol = 5,cols = combined[c(8,13,14)])
 
-
 #Figure 3C GO terms
-
 DGE_all <- FindAllMarkers(clusters, logfc.threshold = 0.25, only.pos = TRUE,assay = 'RNA')
 annotation <- function(genelist, GOquant)
 {
@@ -178,7 +170,6 @@ annotation <- function(genelist, GOquant)
   return(allRes)
 }
 
-
 clusterGO <- function(DGE, clusterID, GOquant)
 {
   dge <- as.data.frame(DGE)
@@ -198,7 +189,6 @@ topDiffGenes <- function (genelist)
 
 cluster8 <- clusterGO(DGE_all, 8, 500) %>% filter(elimKS < 0.05)
 neuronup <- c8[c(126,80,142,71, 125, 21, 123,89,122, 88,43, 55, 138, 40, 132), ]
-
 ggplot(neuronup, aes(x =Annotated,y = reorder(Term, Annotated))) +
   theme_classic()+
   geom_col(fill = 'forestgreen')  +
@@ -207,11 +197,8 @@ ggplot(neuronup, aes(x =Annotated,y = reorder(Term, Annotated))) +
   xlab('Number of genes') +
   ylab('GO term')
 
-
 #Figure 4D Immune GO terms
-
 immuneUP <- c8[c(34,22,139,2,19,5,13,62,10.150,100,72,64),]
-
 ggplot(immuneUP, aes(x =Significant,y = reorder(Term, Significant))) +
   theme_classic()+
   geom_col(fill = 'firebrick')  +
@@ -227,17 +214,13 @@ DimPlot(chintamen_shaul.harmony.clust_intersect, pt.size = 0.6,label.size = 6,sp
 DotPlot(chintamen_shaul.harmony.clust_intersect, features = c(c('Cd33', 'Cx3cr1', 'P2ry12', 'P2ry13', 'Tgfbr1', 'Txnip', 'Glul', 'Tmem119'), c('Tyrobp', 'Ctsb', 'Cstb', 'Ctsd', 'Apoe', 'B2m', 'Fth1', 'Timp2', 'H2-D1', 'Lyz2'),c('Trem2', 'Ank', 'Cd63', 'Cd9','Serpine2', 'Ctsz', 'Cd68', 'Cadm1', 'Spp1','Cd52', 'Ctsa', 'Clec7a', 'Axl', 'Ctsl','Lpl','Ccl6', 'Csf1', 'Hif1a', 'Gusb','Cst7', 'Itgax')), cols = 'RdBu') + RotatedAxis() + xlab('')
 
 #Figure 4G Venn Diagram of upregulated genes
+homeostatic <- c(0,1,2,3,4)
+DAM <- 5
 shaul <- FetchData(chintamen_shaul.harmony.clust_intersect, vars = c('project_orig', "seurat_clusters"))
-
 Shaul_homeostatic <- filter(shaul, project_orig == 'Shaul') %>% filter(seurat_clusters %in% homeostatic) %>% rownames()
-
 Shaul_DAM <- filter(shaul, project_orig == 'Shaul') %>%filter(seurat_clusters %in% DAM) %>% rownames()
-
 Chintamen_homeostatic <- filter(shaul, project_orig == 'Chintamen') %>% filter(seurat_clusters %in% homeostatic)%>% rownames()
-
 Chintamen_DAM <- filter(shaul, project_orig == 'Chintamen') %>% filter(seurat_clusters %in% DAM) %>% rownames()
-
-
 
 # Cluster breakdown
 clust <-as.data.frame(table(clusters$tree.ident))
@@ -271,7 +254,6 @@ DotPlot(clusters, assay = 'RNA', features =c('Cx3cr1','Tmem119', 'P2ry12', 'Hexb
 
 #Sex specific differences
 FeaturePlot(clusters, features = 'Xist', cols = c('aliceblue', 'tomato1'), label = TRUE)
-
 female <- FetchData(clusters, vars = 'Xist')
 MG_F <- clusters[, which(x = female > 0)]
 Fcells <- colnames(MG_F@assays[["RNA"]]@counts)
@@ -335,7 +317,6 @@ ggplot(clust_breakdown, aes(fill= Sex, y= Percent, x= ClusterID)) +
         axis.line = element_line(colour = "black")) +
   scale_fill_manual(values =c('tomato1','cornflowerblue'))
 
-
 SGZ_MG <- subset(clusters, idents = 8)
 female <- FetchData(SGZ_MG, vars = 'Xist')
 
@@ -349,7 +330,6 @@ MG_F <- AddMetaData(
   object = MG_F,
   metadata = tag_f,
   col.name= "Sex")
-
 
 MG_M <- SGZ_MG[, which(x = female == 0)]
 Mcells <- colnames(MG_M@assays[["RNA"]]@counts)
@@ -371,7 +351,6 @@ SGZ_MvF <- as.data.frame(SGZ_MvF)
 genes <- filter(SGZ_MvF, p_val_adj < 0.001)
 genes <- rownames(genes)
 VlnPlot(SGZ, idents = c('M','F'), features = genes, pt.size = 0, cols = c( 'tomato1','cornflowerblue'))
-
 
 #DGE between clusters
 top_markers <- DGE %>% group_by(cluster) %>% top_n(n = 5, wt = avg_log2FC)
