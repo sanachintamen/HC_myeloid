@@ -1,11 +1,12 @@
 
-library(Seurat);
+library(Seurat)
 library(harmony)
-library(Matrix);
-library(ggplot2);
-library(dittoSeq);
-library(SeuratWrappers);
-library(pheatmap);
+library(Matrix)
+library(ggplot2)
+library(dittoSeq)
+library(SeuratWrappers)
+library(pheatmap)
+library(dplyr)
 
 ## Load Hippocampal data comprising only SGZ and homeostatic clusters (8,13 and 14)
 load("chintamen_MG_raw_seurat_81314.rda",verbose=T) 
